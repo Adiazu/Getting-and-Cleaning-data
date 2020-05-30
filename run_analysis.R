@@ -45,3 +45,14 @@ data <- rbind(Test,Train)
 ##Forcing unique columnames to use the sqldf package
 valid_column_names <- make.names(names=names(data), unique=TRUE, allow_ = TRUE)
 names(data) <- valid_column_names
+
+##Looking for the features that have a mean or a std
+means <- data[,grep("mean...",names(data))]
+stds <- data[,grep("std...",names(data))]
+others <- data[,c(1,2,564)]
+NewData <- cbind(means,stds,others)
+
+##Puting the names of the activities
+
+
+
