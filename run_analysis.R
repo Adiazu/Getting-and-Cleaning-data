@@ -53,6 +53,8 @@ others <- data[,c(1,2,564)]
 NewData <- cbind(means,stds,others)
 
 ##Puting the names of the activities
-
+NewData2 <- sqldf("Select a.*,b.Description from NewData a
+                  join DimActivity b
+                  on a.activityID = b.activityID")
 
 
