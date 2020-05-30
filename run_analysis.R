@@ -46,15 +46,25 @@ data <- rbind(Test,Train)
 valid_column_names <- make.names(names=names(data), unique=TRUE, allow_ = TRUE)
 names(data) <- valid_column_names
 
-##Looking for the features that have a mean or a std
-means <- data[,grep("mean...",names(data))]
+##Looking for the features that have a mean or a std and also preserving the columns with subjectID
+means<- data[,grep("mean...",names(data))]
 stds <- data[,grep("std...",names(data))]
-others <- data[,c(1,2,564)]
+others <- data[,c(1,2)]
 NewData <- cbind(means,stds,others)
 
 ##Puting the names of the activities
-NewData2 <- sqldf("Select a.*,b.Description from NewData a
+FinalData <- sqldf("Select a.*,b.Description from NewData a
                   join DimActivity b
                   on a.activityID = b.activityID")
 
+##Creating new tidy data set that contains the average of each variable for each activity and each subject
 
+melted <- melt(FinalData, id=c("subjectID","Description","activityID"))
+tidy <- sqldf("Select a.subjectID
+                ,a.Description
+                ,a.variable
+                ,avg(a.value) as Average
+              from melted a
+              group by a.subjectID
+                ,a.Description
+                ,a.variable")
